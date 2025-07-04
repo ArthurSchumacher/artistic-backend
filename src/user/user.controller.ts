@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from './dto/user.dto';
+import { UserDetailsDto } from './dto/user-details.dto';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 
 @Controller('user')
+@UseGuards(AdminGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  constructor(private readonly userService: UserService) { }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Serialize(UserDto)
+  async findAll() {
+    try {
+      return await this.userService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get(':uuid')
+  @Serialize(UserDetailsDto)
+  async findOne(@Param('uuid') uuid: string) {
+    try {
+      return await this.userService.findOne(uuid);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Patch(':uuid')
+  @Serialize(UserDetailsDto)
+  async update(@Param('uuid') uuid: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      return await this.userService.update(uuid, updateUserDto);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Delete(':uuid')
+  @Serialize(UserDto)
+  async remove(@Param('uuid') uuid: string) {
+    try {
+      return await this.userService.remove(uuid);
+    } catch (error) {
+      throw error;
+    }
   }
 }
