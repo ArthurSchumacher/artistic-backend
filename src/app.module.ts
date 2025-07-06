@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { AboutWordModule } from './about_word/about_word.module';
 import { TestimonialModule } from './testimonial/testimonial.module';
+import { CardModule } from './card/card.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TestimonialModule } from './testimonial/testimonial.module';
     AuthModule,
     AboutWordModule,
     TestimonialModule,
+    CardModule,
   ],
   controllers: [AppController],
   providers: [AppService,
