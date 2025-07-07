@@ -7,10 +7,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtGuard } from './auth/guards/jwt.guard';
-import { AboutWordModule } from './about_word/about_word.module';
+import { JwtGuard } from './auth/guards/jwt.guard'
 import { TestimonialModule } from './testimonial/testimonial.module';
 import { CardModule } from './card/card.module';
+import { WordModule } from './word/word.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { CardModule } from './card/card.module';
       inject: [ConfigService],
     }),
     AuthModule,
-    AboutWordModule,
+    WordModule,
     TestimonialModule,
     CardModule,
   ],
