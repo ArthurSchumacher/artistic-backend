@@ -1,15 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAboutWordDto } from './dto/create-about_word.dto';
 import { UpdateAboutWordDto } from './dto/update-about_word.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { AboutWord } from './schemas/about_word.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class AboutWordService {
-  async create(createAboutWordDto: CreateAboutWordDto) {
-    return 'This action adds a new aboutWord';
+  constructor(@InjectModel(AboutWord.name) private aboutWordModel: Model<AboutWord>) { }
+
+  async create(createAboutWordDto: CreateAboutWordDto): Promise<AboutWord> {
+    const createdWord = new this.aboutWordModel(createAboutWordDto);
+    return await createdWord.save();
   }
 
-  async findAll() {
-    return `This action returns all aboutWord`;
+  async findAll(): Promise<AboutWord[]> {
+    const words = await this.aboutWordModel.find().exec();
+    if (words.length === 0) {
+      throw new NotFoundException("Words not found.")
+    }
+
+    return words;
   }
 
   async findOne(id: number) {
