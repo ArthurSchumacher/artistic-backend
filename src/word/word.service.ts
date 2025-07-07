@@ -7,15 +7,15 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class WordService {
-  constructor(@InjectModel(Word.name) private WordModel: Model<Word>) { }
+  constructor(@InjectModel(Word.name) private wordModel: Model<Word>) { }
 
   async create(createWordDto: CreateWordDto): Promise<Word> {
-    const createdWord = new this.WordModel(createWordDto);
+    const createdWord = new this.wordModel(createWordDto);
     return await createdWord.save();
   }
 
   async findAll(): Promise<Word[]> {
-    const words = await this.WordModel.find().exec();
+    const words = await this.wordModel.find().exec();
     if (words.length === 0) {
       throw new NotFoundException("Words not found.")
     }
@@ -24,7 +24,7 @@ export class WordService {
   }
 
   async findOne(uuid: string): Promise<Word> {
-    const word = await this.WordModel.findOne({ uuid }).exec();
+    const word = await this.wordModel.findOne({ uuid }).exec();
     if (!word) {
       throw new NotFoundException("Word not found.");
     }
@@ -32,7 +32,7 @@ export class WordService {
   }
 
   async update(uuid: string, updateWordDto: UpdateWordDto): Promise<Word> {
-    const updatedWord = await this.WordModel.findOneAndUpdate({ uuid }, updateWordDto).exec();
+    const updatedWord = await this.wordModel.findOneAndUpdate({ uuid }, updateWordDto).exec();
     if (!updatedWord) {
       throw new NotFoundException("User not found.");
     }
@@ -43,6 +43,10 @@ export class WordService {
   }
 
   async remove(uuid: string) {
-    return `This action removes a #${uuid} Word`;
+    const word = await this.wordModel.findOneAndDelete({ uuid }).exec();
+    if (!word) {
+      throw new NotFoundException(`Word with uuid: ${uuid} not found`);
+    }
+    return word;
   }
 }
