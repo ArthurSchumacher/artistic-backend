@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { TestimonialService } from './testimonial.service';
 import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from './dto/update-testimonial.dto';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { TestimonialDto } from './dto/testimonial.dto';
 
 @Controller('testimonial')
+@UseGuards(AdminGuard)
+@Serialize(TestimonialDto)
 export class TestimonialController {
   constructor(private readonly testimonialService: TestimonialService) {}
 
